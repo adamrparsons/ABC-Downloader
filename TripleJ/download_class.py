@@ -86,6 +86,8 @@ class ABCDownloader:
             outfile.write(infile.read())
             infile.close()
         outfile.close()
+        for i in self.files:
+            os.remove(i)
 
 
     def download_m1_file(self):
@@ -162,9 +164,11 @@ class ABCDownloader:
         command = ("ffmpeg -i " + self.output_file + " -bsf:a aac_adtstoasc -acodec copy -vcodec copy " + output_m4a)
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         process.wait()
+        os.remove(self.output_file)
 
     def delete(self):
         shutil.rmtree(self.dir)
+
 
 if __name__ == "__main__":
     downloader = ABCDownloader(pool_size=40)
