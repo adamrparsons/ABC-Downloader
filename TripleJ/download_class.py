@@ -7,6 +7,8 @@ import m3u8
 import requests
 import subprocess
 import shutil
+import re
+from bs4 import BeautifulSoup
 
 class ABCDownloader:
 
@@ -18,6 +20,7 @@ class ABCDownloader:
         self.succeed = {}
         self.failed = []
         self.total_segments = 0
+        self.html_url = ''
         self.files = []
         self.master_url = "https://abcradiomodhls-vh.akamaihd.net/i/triplej/audio/mix-2019-02-16-1-final.m4a/master.m3u8"
         self.master_file = "master.m3u8"
@@ -27,6 +30,7 @@ class ABCDownloader:
         self.output_file = ''
         self.output_m4a = ''
         self.final_name = 'Mixup.m4a'
+        self.pretty_name = ''
 
 
     def _get_http_session(self, pool_connections, pool_maxsize, max_retries):
@@ -39,10 +43,12 @@ class ABCDownloader:
         return session
     
 
-    def run(self, m3u8_url):
+    def run(self, input_url):
+        self.html_url = input_url
         dir = str(uuid.uuid4())
         self.dir = os.path.join('data', dir)
         os.mkdir(self.dir)
+        self.get_html()
         self.master_file = os.path.join(self.dir, self.master_file)
         self.download_m1_file()
         self.download_m2_files()
@@ -50,7 +56,7 @@ class ABCDownloader:
         self.add_names_hack()
         self.join_files()
         self.convert_ts_to_m4a()
-        return self.output_m4a, self.dir
+        return self.output_m4a, self.dir, self.pretty_name
 
 
     def download_url(self, curr_url, file_name):
@@ -88,6 +94,19 @@ class ABCDownloader:
         outfile.close()
         for i in self.files:
             os.remove(i)
+
+
+    def get_html(self):
+        r = requests.get(self.html_url)
+        if r.status_code == 200:
+            
+            self.pretty_name = BeautifulSoup(r.content).title.string + ".m4a"
+            for i in r.text.split('\n'):
+                m = re.search('(https:\/\/.+m3u8)', i)
+                if m:
+                    print("Found: " + m.group())
+                    self.master_url = m.group()
+                    return m.group()
 
 
     def download_m1_file(self):

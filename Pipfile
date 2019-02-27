@@ -13,6 +13,8 @@ django = "*"
 celery = "*"
 gunicorn = "*"
 psycopg2-binary = "*"
+bs4 = "*"
+lxml = "*"
 
 [requires]
 python_version = "3.7"

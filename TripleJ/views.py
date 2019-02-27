@@ -15,11 +15,11 @@ def get_file(request):
         )
 
         downloader = ABCDownloader(pool_size=10)
-        filename, dir = downloader.run(url)
+        filename, dir, pretty_name = downloader.run(url)
         file_request.directory = dir
         file_request.save()
         response = FileResponse(open(filename, 'rb'))
-        response['Content-Disposition'] = 'attachment; filename="Mixup.m4a"'
+        response['Content-Disposition'] = 'attachment; filename="%s"' % pretty_name
         return response
 
     elif request.method == "GET":
