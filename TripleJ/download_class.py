@@ -159,7 +159,7 @@ class ABCDownloader:
         '''
         output_m4a = os.path.join(self.dir, self.final_name)
         self.output_m4a = output_m4a
-        command = ("ffmpeg -i " + self.output_file + " -acodec copy -vcodec copy " + output_m4a)
+        command = ("ffmpeg -i " + self.output_file + " -bsf:a aac_adtstoasc -acodec copy -vcodec copy " + output_m4a)
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         process.wait()
 
