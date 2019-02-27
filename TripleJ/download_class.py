@@ -100,7 +100,7 @@ class ABCDownloader:
         r = requests.get(self.html_url)
         if r.status_code == 200:
             
-            self.pretty_name = BeautifulSoup(r.content).title.string + ".m4a"
+            self.pretty_name = BeautifulSoup(r.content, features='lxml').title.string + ".m4a"
             for i in r.text.split('\n'):
                 m = re.search('(https:\/\/.+m3u8)', i)
                 if m:
