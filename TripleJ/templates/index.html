@@ -2,17 +2,32 @@
 
 {% block content %}
 
+<div class="header max-width">
+    <nav>
+        <h1>ABC Content Downloader</h1>
+        <ul>
+            <li class='nav-item'><a href="https://github.com/aedomsan/ABC-Downloader">Source <i class="fas fa-external-link-alt" style="font-weight:600; font-size:14px;"></i></a></li>
+        </ul>
+    </nav>
+</div>
+
 <div>
-    <div id="container">
+    <div id="container" class="Box Box--condensed">
         <header>
-            <h1>Enter TripleJ Mix url</h1>
+            <h2>Enter TripleJ Mix URL</h2>
         </header>
 
         <form method="post">
             {% csrf_token %}
-            <input name="url" type="text" placeholder="URL"></input>
-            <button type="submit">Submit</button>
+            <input class='input-url' name="url" type="text" placeholder="URL"></input>
+            <button type="submit">Download</button>
         </form>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="footer-content max-width">
+        <span><a href='https://things.adamparsons.id.au/'>© Adam Parsons, {% now 'Y' %} <i class="fas fa-external-link-alt" style="font-weight:600; font-size:14px;"></i></a></span>
     </div>
 </div>
 
