@@ -20,8 +20,13 @@
         <form method="post">
             {% csrf_token %}
             <input class='input-url' name="url" type="text" placeholder="URL"></input>
-            <button type="submit">Download</button>
+            <button id="download" type="submit">Download</button>
         </form>
+        <script type="text/javascript">
+            $('#$download').click(function(){
+                fbq('track', 'Search');
+            })
+        </script>
     </div>
 </div>
 
