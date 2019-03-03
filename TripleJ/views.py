@@ -42,10 +42,10 @@ def delete_old_reqs():
     Why is this a hook instead of a cronjob / celery unit?
     I wanted to keep this super simple and run within a single daemon. Fight me. Wordpress does this too
 
-    Deletes the working directory for any requests older than -days-
+    Deletes the working directory for any old requests
     '''
-    days=1
-    for fr in FileRequest.objects.filter(datetime__lte=timezone.now()-timedelta(days=days)):
+    hours=4
+    for fr in FileRequest.objects.filter(datetime__lte=timezone.now()-timedelta(hours=hours)):
         try:
             shutil.rmtree(fr.directory)
         except:
