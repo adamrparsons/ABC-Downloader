@@ -4,9 +4,16 @@ from django.http import FileResponse
 from .download_class import ABCDownloader
 from .models import FileRequest
 
+# Delete older requests
+import pytz
+import shutil
+from django.utils import timezone
+from datetime import timedelta
+
 def get_file(request):
     
     if request.method == "POST":
+        delete_old_reqs()
         url = request.POST["url"]
         file_request = FileRequest.objects.create(
             ip_address = get_client_ip(request),
@@ -27,6 +34,25 @@ def get_file(request):
     
     else:
         print(request.method)
+
+
+def delete_old_reqs():
+    '''
+    When someone requests a file, remove the old ones
+    Why is this a hook instead of a cronjob / celery unit?
+    I wanted to keep this super simple and run within a single daemon. Fight me. Wordpress does this too
+
+    Deletes the working directory for any requests older than -days-
+    '''
+    days=1
+    for fr in FileRequest.objects.filter(datetime__lte=timezone.now()-timedelta(days=days)):
+        try:
+            shutil.rmtree(fr.directory)
+        except:
+            '''
+            Bad requests happen sometimes
+            '''
+            pass
 
 
 def get_client_ip(request):
